@@ -8,7 +8,7 @@ const sessionStore = new mySQLStore({
     user: 'nodejs_8267',
     password: 'GTm56QFAngJ3H36ZfsTi',
     database: 'nodejs_8267',
-    port: 30895
+    port: 30895,
     checkExpirationInterval: 900000,
     expiration: 86400000
 });
