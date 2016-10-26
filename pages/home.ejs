@@ -1,0 +1,110 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>NodeJS project - home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+    <link href="http://localhost:1337/css/bootstrap.css" rel="stylesheet"/>
+    <link href="http://localhost:1337/css/style.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">    
+    <script>
+	window.onload = () => {
+    var ul = document.getElementById('category list');
+	var container=document.getElementsByClassName('works-content')[0];
+    ul.onclick = (e) => {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'home/' + e.target.dataset.category);
+        xhr.send(); 
+        xhr.onload = function (response) {
+			container.innerHTML=this.responseText;
+           
+        }
+    }
+	var editBtn=document.getElementsByClassName('fa fa-edit');
+	document.addEventListener('click',(e)=>{
+		if (!e.target.dataset.id) return;
+		if (e.target.classList.contains('fa-edit')){
+		  var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'edit/' + e.target.dataset.id);
+        xhr.send(); 
+		xhr.onload = function() {
+						location.href= '/edit/' + e.target.dataset.id; 
+					}
+		};
+		if (e.target.classList.contains('fa-remove')){
+			 var xhr = new XMLHttpRequest();
+        xhr.open('DELETE', 'delete/' + e.target.dataset.id);
+        xhr.send(); 
+		xhr.onload = function() {
+						location.href= '/home'; 
+					}
+		}
+		if (e.target.classList.contains('fa-info')){
+			 var xhr = new XMLHttpRequest();
+        xhr.open('get', 'view/' + e.target.dataset.id);
+        xhr.send(); 
+		xhr.onload = function() {
+						location.href= '/view/' + e.target.dataset.id; 
+					}
+		}
+
+	})
+}
+</script>
+</head>
+<body>
+    <%- include('header') -%>
+	<div class="panel">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-md-6 pull-right">
+                    <form class="login-section" method="post" action="/login">
+                        <div class="login-section-col">
+                            <input type="text" name="username" placeholder="Username"/>
+                            <input type="password" name="password" placeholder="Password"/>
+                        </div>
+                        <div class="login-section-col">
+                            <input class="btn" type="submit" value="Log in"/>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-xs-12 col-md-6 pull-left">
+                    <h1 class="page-title">Check out our work</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section>
+        <div class="container">
+            <ul id="category list" class="works-nav">
+                <li data-category="all" class="works-nav-item"><span data-category="all" class="nav-link active">All</span></li>
+                <li data-category="print" class="works-nav-item"><span data-category="print" class="nav-link">Print</span></li>
+                <li data-category="photography" class="works-nav-item"><span data-category="photography" class="nav-link">Photography</span></li>
+                <li data-category="web" class="works-nav-item"><span data-category="web" class="nav-link">Web</span></li>
+                <li data-category="applications" class="works-nav-item"><span data-category="applications" class="nav-link">Applications</span></li>
+            </ul>
+            <div class="row works-content-container">
+                <ul class="works-content">
+                   <%-data-%>
+				   
+                </ul>
+				<li class="works-item" >
+                        <img src="img/item-add-bg.png"/>
+                        <div class="works-item-mask works-item-add">
+                            <a href="/new"><i class="fa fa-plus"></i></a>
+                        </div>
+                    </li>
+            </div>
+			
+        </div>
+       <div class="works-contact-panel">
+    <div class="container">
+      <h2>Are you impressed by our creativity?</h2>
+      <a class="btn btn-contact" href="/contact">Contact us right now</a>
+    </div>
+  </div>
+    </section>
+    <%- include('footer') -%>
+</body>
+</html>

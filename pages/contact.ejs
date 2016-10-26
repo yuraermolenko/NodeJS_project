@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>NodeJS project - contact</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <link href="css/bootstrap.css" rel="stylesheet"/>
+    <link href="css/style.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+    <script>
+		window.onload=()=>{
+			var nameTest=/^\w+$/;
+			var emailTest = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]+$/;
+			 var messageTest = /.{20,}/;
+			makeRequest=(e)=>{
+				var error=document.getElementsByClassName('error')
+				for (var i=0;i<error.length;i++){
+					error[i].style.display="none"
+				};
+				var form=document.forms[0];
+				var input = form.elements;				
+				if (!nameTest.test(input[0].value)){
+					error[0].style.display="inline-block";
+					e.preventDefault();
+					return;
+				}
+				if (!nameTest.test(input[2].value)){
+					error[2].style.display="inline-block";
+					e.preventDefault();
+					return;
+				}
+				if (!emailTest.test(input[1].value)){
+					error[1].style.display="inline-block";
+					e.preventDefault();
+					return;
+				}
+				if (!messageTest.test(input[3].value)){
+					error[3].style.display="inline-block";
+					e.preventDefault();
+					return;
+				}
+			}
+		}
+    </script>
+</head>
+<body>
+    <%- include('header') -%>
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2540.8359291561046!2d30.450614817669607!3d50.444156663504785!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40d4ce87a0bfa6d3%3A0x19327c76da170b91!2sIgnite+Ukraine!5e0!3m2!1sru!2sua!4v1474789633419" width="100%" height="400" frameBorder="0" style="border:0" allowFullScreen></iframe>
+    <div class="container contact-container">
+        <div class="col-xs-12 col-md-offset-2 col-md-8">
+            <h1 class="contact-form-title">Contact form</h1>
+            <form class="contact-form" action="/send-mail" method="POST"  enctype="text/plain">
+               
+                <input type="text" name="name" placeholder="Name">
+				 <span class="error" style="display: none">Use only English characters!</span>
+                <input type="text" name="email" placeholder="Email Address">
+				<span class="error" style="display: none">Invalid email!</span>               
+                <input type="text" name="subject" placeholder="Subject">
+				<span class="error" style="display: none">Use only English characters!</span>
+                <textarea class="message" name="message" placeholder="Message"></textarea>
+				<span class="error" style="display: none">Too short message (at least 20 characters)</span>
+                <input type="submit" onclick="makeRequest(event)" class="btn btn-contact" style="color:white" value="Send message"  />
+            </form>
+        </div>
+    </div>
+    <%- include('footer') -%>
+</body>
+</html>
