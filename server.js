@@ -130,25 +130,87 @@ app.post('/upload', type, function (req, res) {
 
 
 app.post('/send-mail', (req, res) => {
-    var date = new Date();
-    var hh = date.getHours();
-    if (hh < 10) hh = '0' + hh;
-    var min = date.getMinutes();
-    if (min < 10) min = '0' + min;
-    var sec = date.getSeconds();
-    if (sec < 10) sec = '0' + sec;
-    var dd = date.getDate();
-    if (dd < 10) dd = '0' + dd;
-    var mm = date.getMonth() + 1;
-    if (mm < 10) mm = '0' + mm;
-    var yyyy = date.getFullYear();
+    if(!req.body.length) return;
 
-    date = yyyy + '-' + mm + '-' + dd + '-' + hh + '-' + min + '-' + sec;
-    fs.writeFile(`form_${date}.txt`, req.body, (err) => {
-        if (err) { console.log(err) }
-        console.log('file form created');
-    })
-    res.redirect('/home');
+var formData = req.body.split('\r\n');
+
+var postData = [];
+for(var i=0;i < formData.length;i++) {
+    var tmpArr = formData[i].split('=');
+    postData.push({[tmpArr[0]]:tmpArr[1]});
+}
+// Create a SMTP transporter object
+var transporter = nodemailer.createTransport(
+    {
+        service: 'Gmail',
+        auth: {
+            user: 'yura14ermolenko@gmail.com',
+            pass: 'gfhtym14rednek'
+        },
+        logger: true, // log to console
+        debug: true // include SMTP traffic in the logs
+    },
+    {
+        // default message fields
+
+        // sender info
+        from: '' + postData[0].name + ' ' + postData[1].email + '<' + postData[1].email + '>',
+        headers: {
+            'X-Laziness-level': 1000 // just an example header, no need to use this
+        }
+    });
+
+console.log('SMTP Configured');
+
+// Message object
+var message = {
+
+    // Comma separated list of recipients
+    to: '"Yura" <yura14ermolenko@mail.ru>',
+
+    // Subject of the message
+    subject: postData[2].subject, //
+
+    // plaintext body
+    text: postData[3].message,
+
+    // HTML body
+    html: '<p>' + postData[3].message + '</p>',
+
+};
+
+console.log('Sending Mail');
+transporter.sendMail(message, function (error, info) {
+    if (error) {
+        console.log('Error occurred');
+        console.log(error.message);
+        return;
+    }
+    console.log('Message sent successfully!');
+    console.log('Server responded with "%s"', info.response);
+});
+
+var date = new Date();
+var hh = date.getHours();
+if (hh < 10) hh = '0' + hh;
+var min = date.getMinutes();
+if (min < 10) min = '0' + min;
+var sec = date.getSeconds();
+if (sec < 10) sec = '0' + sec;
+var dd = date.getDate();
+if (dd < 10) dd = '0' + dd;
+var mm = date.getMonth() + 1;
+if (mm < 10) mm = '0' + mm;
+var yyyy = date.getFullYear();
+
+date = yyyy + '-' + mm + '-' + dd + '-' + hh + '-' + min + '-' + sec;
+fs.writeFile(`form_${date}.txt`, req.body, (err) => {
+    if (err) { console.log(err) }
+    console.log('file form created');
+})
+res.redirect('/home');
+
+
 });
 
 
