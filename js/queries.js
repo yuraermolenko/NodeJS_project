@@ -24,7 +24,7 @@ module.exports = {
                             </span>
                         </div>
                     </li> `)
-            })
+            });
 
             self.tableRows = table_rows.join(' ');
 

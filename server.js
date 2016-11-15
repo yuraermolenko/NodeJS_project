@@ -49,9 +49,16 @@ app.get('/contact', function(req, res) {
 
 app.post('/login', function(req, res) {
     if (req.body.username === 'admin' && req.body.password === '12345') {
+        sessionStore.clear(function (err) {
+
+            if (err) console.log(err);
+
+            console.log('store is cleared');
+
+        });
         req.session.isLoggedIn = true;
          req.session.username = req.body.username;
-         console.log(req.session.authorized);
+         console.log(req.session.isLoggedIn);
          sessionStore.set(req.sessionID, req.session, function (err) {
              if (err) {
                  console.log(err)
@@ -65,10 +72,30 @@ app.post('/login', function(req, res) {
     res.end();
     console.log(req.session.isLoggedIn);
 });
-app.get('/edit/:id',editHandler.showEditPage);
+
+app.get('/edit/:id',function (req,res) {
+    if(req.session.isLoggedIn==true){editHandler.showEditPage(req,res)}
+    else {
+        console.log('not autorised')
+        res.redirect('/')}
+});
+
 app.put('/upload/:id', editHandler.uploadItem);
-app.get('/new', (req, res) => { res.render(path.join(__dirname, 'pages/add.ejs')); });
-app.delete('/delete/:id', editHandler.removeItem);
+
+app.get('/new', function (req, res)  {
+    if(req.session.isLoggedIn==true){res.render(path.join(__dirname, 'pages/add.ejs'))}
+    else {
+        console.log('not autorised')
+        res.redirect('/')};
+});
+
+app.delete('/delete/:id',function (req,res) {
+    if(req.session.isLoggedIn==true){editHandler.removeItem(req,res)}
+    else {
+        console.log('not autorised')
+        res.redirect('/')}
+});
+
 app.get('/view/:id', editHandler.showInfo);
 
 app.post('/upload', type, function (req, res) {
@@ -102,34 +129,7 @@ app.post('/upload', type, function (req, res) {
 });
 
 
-//var nodemailer = require('nodemailer');
-//var transport = {
-//    name: 'minimal',
-//    version: '0.1.0',
-//    send: function (mail, callback) {
-//        var input = mail.message.createReadStream();
-//        input.pipe(process.stdout);
-//        input.on('end', function () {
-//            callback(null, true);
-//        });
-//    }
-//};
-//var transporter = nodemailer.createTransport('smtps://yura14ermolenko@gmail.com:gfhtym14rednek');
-
 app.post('/send-mail', (req, res) => {
-    //var mailOptions = {
-    //    from: `${req.body.email}`, // sender address
-    //    to: 'yura14ermolenko@gmail.com', // list of receivers
-    //    subject: `${req.body.subject}`, // Subject line
-    //    text: `${req.body.message}`, // plaintext body
-    //    html: `<b>${req.body.message}</b>` // html body
-    //};
-    //transporter.sendMail(mailOptions, function (error, info) {
-    //    if (error) {
-    //        return console.log(error);
-    //    }
-    //    console.log('Message sent: ' + info.response);
-    //});
     var date = new Date();
     var hh = date.getHours();
     if (hh < 10) hh = '0' + hh;
