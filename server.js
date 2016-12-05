@@ -128,7 +128,7 @@ app.post('/upload', type, function (req, res) {
     addHandler.addItem(req, res);
 });
 
-
+var nodemailer = require('nodemailer');
 app.post('/send-mail', (req, res) => {
     if(!req.body.length) return;
 
