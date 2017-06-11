@@ -144,8 +144,8 @@ var transporter = nodemailer.createTransport(
     {
         service: 'Gmail',
         auth: {
-            user: 'yura14ermolenko@gmail.com',
-            pass: 'gfhtym14rednek'
+            user: 'some@gmail.com',
+            pass: 'somepass'
         },
         logger: true, // log to console
         debug: true // include SMTP traffic in the logs
